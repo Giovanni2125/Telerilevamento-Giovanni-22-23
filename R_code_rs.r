@@ -1,4 +1,4 @@
-Il primo script di telerilevamento
+#Il primo script di telerilevamento
 
 #install packages (raster)
 library(raster)
