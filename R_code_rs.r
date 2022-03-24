@@ -3,20 +3,20 @@
 #install packages (raster)
 library(raster)
 
-#settaggio cartella di lavoro
+#setting the folder of work
 
 setwd("C:/Users/Giovanni/Desktop/lab")
-#importare l'immagine
+#import the picture
 landsat2011<- brick("C:/Users/Giovanni/Desktop/lab/p224r63_2011.grd")
 #plot 
 plot(landsat2011)
 cl<- colorRampPalette(c("black", "grey", "light grey")) (100)
 #landsat ETM+
-#b1= blu
-#b2=verde
-#b3=rosso
-#b4=infrarosso vicino NTR
-#plot della banda blu B1_sre
+#b1= blue
+#b2=green
+#b3=red
+#b4=infrared near NTR(NIR)
+#plot of the blue band B1_sre
 plot(l2011$B1_sre)
 #or
 plot(l2011[[1]])
@@ -75,5 +75,53 @@ clnir <- colorRampPalette(c("red", "orange", "yellow")) (100)
 
 plot(l2011$B4_sre, col=clnir)
 
+#plot of l2011 in the NIR channel
 
 
+
+plot(l2011$B4_sre)
+
+clnir <- colorRampPalette(c("red", "orange", "yellow")) (100)
+
+plot(l2011$B4_sre, col=clnir)
+#or
+plot(l2011[[4]])
+
+#landsat ETM+
+#b1=blue
+#b2=red
+#b3=green
+#b4=NIR
+
+#plot RGB layers
+
+plotRGB(l2011, r=3, g=2, b=1, stretch="lin")
+
+plotRGB(l2011, r=4, g=3, b=2, stretch="lin")
+
+plotRGB(l2011, r=3, g=4, b=2, stretch="lin")
+
+plotRGB(l2011, r=3, g=2, b=4, stretch="lin")
+
+# Exercise: build a multiframe with visible RGB
+# (linear stretch) on top of false colours
+# (histogram stretch)
+par(mfrow=c(1,2))
+par(mfrow=c(2,1))
+
+
+plotRGB(l2011, r=3, g=2, b=1, stretch="lin")
+
+
+plotRGB(l2011, r=3, g=4, b=2, stretch="hist")
+
+# Exercise: upload the image from 1988
+l1988<- brick("C:/Users/Giovanni/Desktop/lab/p224r63_1988.grd")
+
+# compare the two images 
+
+par(mfrow=c(2,1))
+plotRGB(l2011, r=4, g=3, b=2, stretch="lin")
+plotRGB(l1988, r=4, g=3, b=2, stretch="lin")
+
+       
