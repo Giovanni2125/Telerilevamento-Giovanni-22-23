@@ -53,4 +53,10 @@ difdvi<-dvi1992 - dvi2006
 
 plot(difdvi, col=cld)
 
+#day 2
 
+# RANGEdvi 8 bit 255 -2555
+#RANGE NDVI 1 -1
+#Range DVI (16 bit) 65535 -65535
+#Range NDVI 1 -1
+#NDVI può esserer usato anche con immagini differenti con risoluzione radiometrica differente
