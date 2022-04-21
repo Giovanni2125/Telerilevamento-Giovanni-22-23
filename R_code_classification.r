@@ -36,3 +36,17 @@ plot(gcc2$map)
 
 gcc4 <- unsuperClass(gc, nClasses=4)
 plot(gcc4$map)
+
+clc <- colorRampPalette(c('yellow','red','blue','black'))(100)
+plot(gcc4$map, col=clc)
+
+# compare the classified map with the original set
+par(mfrow=c(2,1))
+plot(gcc4$map, col=clc)
+plotRGB(gc, r=1, g=2, b=3, stretch="hist")
+
+st <- stack(gc, gcc4$map)
+
+ plot(st) 
+
+
