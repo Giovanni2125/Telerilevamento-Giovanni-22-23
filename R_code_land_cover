@@ -1,0 +1,73 @@
+#code for generating land cover maps from satellite
+
+library(raster)
+library(RStoolbox) #for classification
+
+setwd("C:/Users/Giovanni/Desktop/lab")
+
+l92<- brick("defor1_.jpg")
+
+#NIR is 1
+#r is 2
+#g is 3
+
+plotRGB(l92, 1, 2, 3, stretch="lin")
+
+l06<- brick("defor2_.jpg")
+
+par(mfrow=c(2,1))
+plotRGB(l92, 1, 2, 3, stretch="lin")
+plotRGB(l06, 1, 2, 3, stretch="lin")
+
+#unsupervised classification
+dlc<- unsuperClass(defor1, nClasses=2)
+plot(dlc$map)
+
+#class 1 forest
+#class 2 agricolture
+
+p1<- ggRGB(l92, 1, 2, 3, stretch="lin")
+
+p2<- ggRGB(l06, 1, 2, 3, stretch="lin")
+
+install.packages("patchwork")
+
+library(patchwork)
+
+p1<- ggRGB(l92, 1, 2, 3, stretch="lin")
+
+p2<- ggRGB(l06, 1, 2, 3, stretch="lin")
+
+#show the plots
+p1
+p2
+
+#add the plots
+
+p1+p2
+
+p1/p2
+
+#classification
+l92c<- unsuperClass(l92, nClasses=2)
+
+ plot(l92c$map)
+ 
+ #same thing with l06
+ 
+ l06c<- unsuperClass(l06, nClasses=2)
+ l06c
+ 
+ plot(l06c$map)
+
+#frequencies
+
+freq(l92c$map)
+#class 1 306280 pixels
+#class 2  35012 pixels
+
+ freq(l06c$map)
+
+#class 1 178305 pixels
+#class 2 164421 pixels
+ 
