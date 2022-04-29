@@ -2,6 +2,8 @@
 
 library(raster)
 library(RStoolbox) #for classification
+install.packages("patchwork")
+library(patchwork)
 
 setwd("C:/Users/Giovanni/Desktop/lab")
 
@@ -20,7 +22,7 @@ plotRGB(l92, 1, 2, 3, stretch="lin")
 plotRGB(l06, 1, 2, 3, stretch="lin")
 
 #unsupervised classification
-dlc<- unsuperClass(defor1, nClasses=2)
+dlc<- unsuperClass(l92, nClasses=2)
 plot(dlc$map)
 
 #class 1 forest
@@ -30,13 +32,7 @@ p1<- ggRGB(l92, 1, 2, 3, stretch="lin")
 
 p2<- ggRGB(l06, 1, 2, 3, stretch="lin")
 
-install.packages("patchwork")
 
-library(patchwork)
-
-p1<- ggRGB(l92, 1, 2, 3, stretch="lin")
-
-p2<- ggRGB(l06, 1, 2, 3, stretch="lin")
 
 #show the plots
 p1
@@ -63,11 +59,91 @@ l92c<- unsuperClass(l92, nClasses=2)
 #frequencies
 
 freq(l92c$map)
-#class 1 306280 pixels
-#class 2  35012 pixels
+#class 1 306280 pixels(forest)
+#class 2  35012 pixels(agricoltural areas)
+
+tot92<- 341292
+
+#proportion of classes
+
+prop_forest_92 <- 305213/tot92
+
+ prop_forest_92
+[1] 0.894287
+
+prop_agr_areas_92 <- 35012/tot92
+> prop_agr_areas_92
+[1] 0.1025866
+
+
+#percentual of classes
+
+perc_forest_92 <- 305213 * 100 / tot92
+
+ perc_forest_92
+[1] 89.4287
+
+perc_agr_areas_92 <- 35012*100 / tot92
+
+perc_agr_areas_92
+[1] 10.25866
+
 
  freq(l06c$map)
 
-#class 1 178305 pixels
-#class 2 164421 pixels
+#class 1 178305 pixels(forest)
+#class 2 164421 pixels(agricoltural areas)
+
+tot06 <- 342726
+
+prop_forest_06 <- 178305 / tot06
+
+prop_forest_06
+[1] 0.5202552
+
+perc_forest_06 <- 178305 * 100 / tot06
+
+perc_forest_06
+[1] 52.02552
+
+perc_agr_areas_06 <- 164421 * 100/ tot06
+
+perc_agr_areas_06
+[1] 47.97448
+
+#FINAL DATA
+
+#percent forest in 1992 89.4287%
+
+#percent agricoltural areas in 1992 10.25866%
+
+#percent forest in 2006 52.02552%
+
+#percent agricoltural areas in 2006 47.97448%
+
+#let's build a dataframe with our data
+
+#columns(fields)
+
+class <- c("Forest", "Agricolture")
+
+percent_1992 <- c(89.4287, 10.5713)
+percent_2006 <- c(51.91932, 48.08068)
+
+#let's do a multiframe
+ multitemporal <-data.frame(class, percent_1992, percent_2006)
+
+#graph 1992
+ggplot(multitemporal, aes(x=class, y=percent_1992, color=class)) + geom_bar(stat="identity",,fill="white")
+
+#same graph for 2006
+ggplot(multitemporal, aes(x=class, y=percent_2006, color=class)) + geom_bar(stat="identity",,fill="white")
+
+ #pdf
+ pdf("percentages_1992.pdf")
+ ggplot(multitemporal, aes(x=class, y=percent_1992, color=class)) + geom_bar(stat="identity",,fill="white")
+ dev.off()
  
+pdf("percentages_2006.pdf")
+ggplot(multitemporal, aes(x=class, y=percent_2006, color=class)) + geom_bar(stat="identity",,fill="white")
+dev.off()
