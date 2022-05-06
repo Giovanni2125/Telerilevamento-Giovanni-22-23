@@ -28,3 +28,11 @@ g2 <- ggRGB(p224r63_2011res, 4, 3, 2)
 
 
 g3 <- ggRGB(p224r63_2011res,100, 4, 3, 2) #rivedere
+
+#PCA analysis
+resPCA <- rasterPCA(p224r63_2011res)
+
+summary(p224r63_2011respca$model)
+
+plot(p224r63_2011respca$map)
+
