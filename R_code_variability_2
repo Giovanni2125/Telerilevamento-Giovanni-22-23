@@ -1,0 +1,87 @@
+library(raster)
+library(RStoolbox)
+library(ggplot2)
+library(patchwork)
+library(viridis)
+
+setwd("C:/Users/Giovanni/Desktop/lab")
+
+sen<- brick("sentinel.png
+
+#NIR
+r=1
+g=2
+b=3
+
+ggRGB(sen, 1,2,3)
+
+#visualize the image such as the image becomes green
+
+ggRGB(sen, 2,1,3)
+
+sen_PCA <- rasterPCA(sen)
+
+summary(sen_PCA$model)
+
+plot(sen_PCA$map)
+
+ggplot()+
+geom_raster(s
+
+pc1 <- sen_PCA$map$PC1
+
+pc2 <- sen_PCA$map$PC2
+
+pc3 <- sen_PCA$map$PC3
+
+g1 <- ggplot() +
+geom_raster(pc1, mapping=aes(x=x, y=y, fill=PC1))
+
+g2 <- ggplot() +
+geom_raster(pc2, mapping=aes(x=x, y=y, fill=PC2))
+
+g3<- ggplot() +
+geom_raster(pc3, mapping=aes(x=x, y=y, fill=PC3))
+
+sd3 <- focal(pc1, matrix(1/9, 3, 3), fun=sd)
+
+#map by ggplot the standard deviation of the first #principal component
+
+ggplot() +
+geom_raster(sd3, mapping=aes(x=x, y=y, fill=layer))
+
+ggplot() +
+geom_raster(sd3, mapping=aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis()
+
+ggplot() +
+geom_raster(sd3, mapping=aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis(option="cividis")
+
+#images altogheter
+
+im1 <- ggRGB(sen, 2, 1, 3)
+ 
+im2 <- ggplot() +
+geom_raster(pc1, mapping=aes(x=x, y=y, fill=PC1))
+ 
+im3 <- ggplot() +
+geom_raster(sd3, mapping=aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis(option="inferno")
+
+im1+im2+im3
+
+#calculate the heterogeneity
+
+sd5 <- focal(pc1, matrix(1/25, 5, 5), fun=sd)
+
+im4 <- ggplot() +
+geom_raster(sd5, mapping=aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis(option="inferno")
+
+sd7 <- focal(pc1, matrix(1/49, 7, 7), fun=sd)
+
+im5 <- ggplot() +
+geom_raster(sd7, mapping=aes(x=x, y=y, fill=layer)) +
+scale_fill_viridis(option="inferno")
+
