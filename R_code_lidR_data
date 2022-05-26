@@ -1,0 +1,50 @@
+library(raster)
+library(rgdal) 
+#or
+library(RStoolbox)
+library(viridis)
+library(ggplot2)
+
+setwd("C:/Users/Giovanni/Desktop/lab")
+
+dsm_2004 <- raster("2004Elevation_DigitalElevationModel-2.5m.tif")
+
+dtm_2004 <- raster("2004Elevation_DigitalTerrainModel-2.5m.tif")
+
+plot(dsm_2004)
+
+plot(dtm_2004)
+chm_2004 <- dsm_2004 - dtm_2004
+chm_2004
+
+ plot(chm_2004)
+
+dsm_2013 <- raster("2013Elevation_DigitalElevationModel-0.5m.tif")
+dsm_2013
+
+dtm_2013 <- raster("2013Elevation_DigitalTerrainModel-0.5m.tif")
+dtm_2013
+
+chm_2013 <- dsm_2013 - dtm_2013
+chm_2013
+
+
+difference_chm <- chm_2013-chm_2004
+
+#ERROR! different resolution! we have to resample
+
+#chm2013resampled
+chm_2013r <- resample(chm_2013, chm_2004)
+
+difference_chm <- chm_2013r-chm_2004
+
+ggplot() + 
+geom_raster(difference_chm, mapping =aes(x=x, y=y, fill=layer)) + 
+scale_fill_viridis() + ggtitle("CHM difference San Genesio/Jenesien")
+
+install.packages(lidR)
+library(lidR)
+
+point_cloud <- readLAS("point_cloud.laz")
+
+plot(point_cloud)
