@@ -34,7 +34,8 @@ rlist <- list.files(pattern="lst")
 
 import <- lapply(rlist,raster)
 
-tgr <- stack(import) prendiamo import e lo mettiamo tutto insieme
+tgr <- stack(import) 
+#prendiamo import e lo mettiamo tutto insieme
 
 plot(tgr, col=cl)
 
