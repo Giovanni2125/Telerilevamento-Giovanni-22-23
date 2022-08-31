@@ -6,7 +6,7 @@ library(viridis)
 
 setwd("C:/Users/Giovanni/Desktop/lab")
 
-sen<- brick("sentinel.png
+sen<- brick("sentinel.png")
 
 #NIR
 r=1
