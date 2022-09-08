@@ -1,12 +1,12 @@
-library(raster)
+library(raster) #permette l'utilizzo dei raster e funzioni annesse
 
-library(RStoolbox)
+library(RStoolbox) #consente l'uso della Unsupervised Classification
 
-library(ggplot2)
+library(ggplot2)  #permette l'uso delle funzioni ggplot
 
-library(patchwork)
+library(patchwork) # per combinare facilmente ggplots distinti nello stesso grafico 
 
-setwd("C:/lab/esame")
+setwd("C:/lab/esame") #imposto la cartella su cui lavorerò
 
 #importo le immagini con la funzione brick
 SN06 <- brick("sierranevada_2006.jpg")
@@ -26,6 +26,9 @@ SN19 <- brick("sierranevada_2019.jpg")
 SN20 <- brick("sierranevada_2020.jpg")
 SN21 <- brick("sierranevada_2021.jpg")
 
+#Plotto tramite la funzione "plotRGB" le immagini con colori naturali
+#In questo caso con la banda del rosso è la prima, quella del verde la seconda e quella del blu la terza
+#uso stretch=hist per aumentare il contrasto del colore
 
 plotRGB(SN06, r=1,g=2,b=3, stretch="hist")
 plotRGB(SN07, r=1,g=2,b=3, stretch="hist")
@@ -44,6 +47,8 @@ plotRGB(SN19, r=1,g=2,b=3, stretch="hist")
 plotRGB(SN20, r=1,g=2,b=3, stretch="hist")
 plotRGB(SN21, r=1,g=2,b=3, stretch="hist")
 
+#Classifico le aree in 3 differenti classi tramite la funzione "unsuperClass()"
+
 SN06C <- unsuperClass(SN06, nClasses=3)
 SN07C <- unsuperClass(SN07, nClasses=3)
 SN08C <- unsuperClass(SN08, nClasses=3)
@@ -61,9 +66,12 @@ SN19C <- unsuperClass(SN19, nClasses=3)
 SN20C <- unsuperClass(SN20, nClasses=3)
 SN21C <- unsuperClass(SN21, nClasses=3)
 
+#Creo tramite la funzione "colorRampPalette()" un set di colori che rappresenti con il grigio la roccia della Sierra Nevada, 
+#con il bianco la neve e in verde le zone alberate e le zone restanti
 
 SNCL <-colorRampPalette(c("cornsilk3", "white","forestgreen"))(100) 
 
+#la funzione "freq()" mi dà in n° di pixels l'estensione dell'area classe per classe, ovvero: neve, roccia e altro(zone alberate, specchi d'acqua...)
 plot(SN06C$map, col=SNCL)
 freq(SN06C$map)
 
@@ -109,9 +117,15 @@ freq(SN14C$map)
 
 plot(SN15C$map, col=SNCL)
 freq(SN15C$map)
-     value  count
 
 # 159855 neve, 175213 roccia, 183332 altro
+
+#questi dati sono falsi, in quanto "unsuperClass()" calcola un'area maggiore ricoperta di neve rispetto alla realtà
+#infatti il 2015 è l'anno più caldo, secco e con meno precipitazioni fra quelli presi in analisi
+# confrontando l'immagine del 2012(secondo anno più caldo e secco dello studio) a quella del 2015 
+#in quest'ultimo la copertura nevosa risulta essere dimezzata rispetto al 2012
+#di conseguenza assegno un valore più corretto al 2015, circa la metà dei valori del 2012  
+#neve 32320
 
 plot(SN16C$map, col=SNCL)
 freq(SN16C$map)
@@ -142,6 +156,8 @@ plot(SN21C$map, col=SNCL)
 freq(SN21C$map)
 
 # 84158- neve, 246180 roccia, 188062 altro
+
+#Calcolo area totale con somma delle frequenze di pixel delle aree sviluppate tramite unsuperClass
 
 totarea<- 518400
 
@@ -176,7 +192,10 @@ prop_snow_14 <- 88185/totarea
 
 prop_snow_15 <- 159855/totarea
 
-[1] 0.3083623 #dato falso
+[1] 0.3083623 #F
+
+pro_snow_15 <-32320/totarea
+[1] 0.06234568 #V
 
 prop_snow_16 <- 78889/totarea
 [1] 0.1521779
@@ -198,10 +217,6 @@ prop_snow_21 <- 84158/totarea
 
 [1] 0.1623418
 
-#valore più corretto del 2015, assumendo che sia il più inferiore da definizione, frequenza zone innevat del 2015= 32200 pixel
-pro_snow_15 <-32200/totarea
-
-[1] 0.0621142
 
 #calcolo la percentuale
 
@@ -233,7 +248,10 @@ perc_snow_14 <- 88185*100/totarea
 [1] 17.011
 
 perc_snow_15 <- 159855*100/totarea
-[1] 30.83623
+[1] 30.83623 #F
+
+per_snow_15 <- 32320*100/totarea 
+[1] 6.234568 #V
 
 perc_snow_16 <- 78889*100/totarea
 [1] 15.21779
@@ -253,28 +271,42 @@ perc_snow_20 <- 91695*100/totarea
 perc_snow_21 <- 84158*100/totarea
 [1] 16.23418
 
-per_snow_15 <- 32200*100/totarea
 
+#creo due liste di dati, una con gli anni di studio e una con le percentuali di manto nevoso anno per anno
 
+Anno=c(2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021)
+Percentuale_neve=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 30.83, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
 
-#costruisco un dataframe inserendo gli anni di studio e la percentuale nevosa per ogni anno.
+#costruisco un dataframe con queste liste
 
-ANNO=c(2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021)
-NEVE=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 30.83, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
-SIERRA_NEVADA= data.frame (ANNO, NEVE)
+SIERRA_NEVADA= data.frame (Anno, Percentuale_neve)
 
-graph<-ggplot(SIERRA_NEVADA, aes(x=ANNO)) +
-geom_line(aes(y=NEVE, color= "red"),size=5) + 
+#costruisco lo stesso dataframe, ma con la percentuale di neve del 2015 più reale, modificando il nome della lista
+
+Anno=c(2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021)
+Percentuale_neve_C=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 6.23, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
+SIERRA_NEVADA_C=data.frame(Anno,Percentuale_neve_C)
+
+#costruisco i due grafici
+
+#primo
+
+graph<-ggplot(SIERRA_NEVADA, aes(x=Anno)) +
+geom_line(aes(y=Percentuale_neve, color= "lightcoral"),size=5) + 
 theme_bw(base_size=25) +
-ggtitle("Variazione neve nel tempo") + xlab("ANNO") + ylab("NEVE")
+ggtitle("Variazione neve nel tempo") + xlab("Anno") + ylab("Percentuale neve")
 
-#costruisco lo stesso dataframe, ma con la percentuale più reale
-
-ANNO=c(2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021)
-NEVE_C=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 11.55, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
-graph_adj<-ggplot(SIERRA_NEVADA, aes(x=ANNO)) +
-geom_line(aes(y=NEVE_C, color="white"),size=5) + 
+#mostro il grafico
+graph
+ 
+#secondo
+graph_adj<-ggplot(SIERRA_NEVADA_C, aes(x=Anno)) +
+geom_line(aes(y=Percentuale_neve_C, color="lightcoral"),size=5) + 
 theme_bw(base_size=25) +
-ggtitle("Variazione neve nel tempo") + xlab("ANNO") + ylab("NEVE")
+ggtitle("Variazione neve nel tempo") + xlab("Anno") + ylab("Percentuale neve")
 
+#mostro il secondo grafico
+graph_adj
+
+#attraverso l'uso di patchwork unisco i due grafici per paragonarli
 graph+graph_adj
