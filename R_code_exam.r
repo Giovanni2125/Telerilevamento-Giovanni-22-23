@@ -2,6 +2,8 @@ library(raster)
 
 library(RStoolbox)
 
+library(ggplot2)
+
 library(patchwork)
 
 setwd("C:/lab/esame")
@@ -60,116 +62,90 @@ SN20C <- unsuperClass(SN20, nClasses=3)
 SN21C <- unsuperClass(SN21, nClasses=3)
 
 
-SNCL <-colorRampPalette(c("cornsilk3", "white","forestgreen"))(100) #
+SNCL <-colorRampPalette(c("cornsilk3", "white","forestgreen"))(100) 
+
 plot(SN06C$map, col=SNCL)
 freq(SN06C$map)
-# 280393 roccia, 113405 neve, 124602 zone alberate
+
+# 113405 neve, 280393 roccia, 124602 altro
 
 plot(SN07C$map, col=SNCL)
 freq(SN07C$map)
-[1,]     1 201383
-[2,]     2  72037- neve
-[3,]     3 244980
+
+# 72037 neve, 201383 roccia, 244980 altro
 
 plot(SN08C$map, col=SNCL)
 freq(SN08C$map)
-[1,]     1  94584- neve
-[2,]     2 232733
-[3,]     3 191083
 
+# 94584 neve, 232733 roccia, 191083 altro
 
 plot(SN09C$map, col=SNCL)
 freq(SN09C$map)
-[1,]     1  76493- neve
-[2,]     2 186540
-[3,]     3 255367
 
-
+#76493- neve, 255367 roccia, 186540 altro
 
 plot(SN10C$map, col=SNCL)
 freq(SN10C$map)
-[1,]     1 110418- neve
-[2,]     2 180058
-[3,]     3 227924
-
+# 110418- neve, 227924 roccia, 80058 altro
 
 plot(SN11C$map, col=SNCL)
 freq(SN11C$map)
-[1,]     1 244069
-[2,]     2 176328
-[3,]     3  98003-neve
 
+# 98003 neve, 244069 roccia, 176328 altro
 
 plot(SN12C$map, col=SNCL)
 freq(SN12C$map)
-[1,]     1 197215
-[2,]     2 256544
-[3,]     3  64641- neve
+
+#  64641 neve, 256544 roccia, 197215 altro 
 
 plot(SN13C$map, col=SNCL)
 freq(SN13C$map)
-[1,]     1  73134- neve
-[2,]     2 251149
-[3,]     3 194117
+# 73134- neve, 251149 roccia, 194117 altro
 
 plot(SN14C$map, col=SNCL)
 freq(SN14C$map)
-[1,]     1 192043
-[2,]     2  88185- neve
-[3,]     3 238172
+
+# 88185- neve, 238172 roccia, 192043 altro
 
 plot(SN15C$map, col=SNCL)
 freq(SN15C$map)
      value  count
-[1,]     1 175213
-[2,]     2 159855- neve
-[3,]     3 183332
+
+# 159855 neve, 175213 roccia, 183332 altro
 
 plot(SN16C$map, col=SNCL)
 freq(SN16C$map)
 
-[1,]     1 199488
-[2,]     2 240023
-[3,]     3  78889- neve
+ # 78889 neve,  240023 roccia, 199488 altro
 
 plot(SN17C$map, col=SNCL)
 freq(SN17C$map)
-[1,]     1 106889- neve
-[2,]     2 201995
-[3,]     3 209516
 
+# 106889 neve, 201995 roccia, 209516 altro
 
 plot(SN18C$map, col=SNCL)
 freq(SN18C$map)
 
-[1,]     1  85761- neve
-[2,]     2 204890
-[3,]     3 227749
-
+#  85761- neve, 227749 roccia, 204890 altro
 
 plot(SN19C$map, col=SNCL)
 freq(SN19C$map)
 
-[1,]     1 219519
-[2,]     2 104650- neve
-[3,]     3 194231
+# 104650 neve, 219519 roccia, 194231 altro
 
 plot(SN20C$map, col=SNCL)
 freq(SN20C$map)
 
-[1,]     1  91695- neve
-[2,]     2 220712
-[3,]     3 205993
+# 91695- neve, 220712 roccia, 205993 altro
 
 plot(SN21C$map, col=SNCL)
 freq(SN21C$map)
 
-[1,]     1  84158- neve
-[2,]     2 246180
-[3,]     3 188062
-
+# 84158- neve, 246180 roccia, 188062 altro
 
 totarea<- 518400
+
+#calcolo della proporzione della neve sull'area totale
 
 prop_snow_06 <- 113405/totarea
 [1] 0.2187596
@@ -222,6 +198,13 @@ prop_snow_21 <- 84158/totarea
 
 [1] 0.1623418
 
+#valore più corretto del 2015, assumendo che sia il più inferiore da definizione, frequenza zone innevat del 2015= 32200 pixel
+pro_snow_15 <-32200/totarea
+
+[1] 0.0621142
+
+#calcolo la percentuale
+
 perc_snow_06 <- 113405*100/totarea
 [1] 21.87596
 
@@ -270,52 +253,28 @@ perc_snow_20 <- 91695*100/totarea
 perc_snow_21 <- 84158*100/totarea
 [1] 16.23418
 
+per_snow_15 <- 32200*100/totarea
 
 
-#let's build a dataframe with our data
+
+#costruisco un dataframe inserendo gli anni di studio e la percentuale nevosa per ogni anno.
 
 ANNO=c(2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021)
-%NEVE=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 30.83, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
-SIERRA_NEVADA= data.frame (ANNO, %NEVE)
+NEVE=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 30.83, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
+SIERRA_NEVADA= data.frame (ANNO, NEVE)
 
 graph<-ggplot(SIERRA_NEVADA, aes(x=ANNO)) +
-geom_line(aes(y=NEVE, color="white"),size=5) + 
+geom_line(aes(y=NEVE, color= "red"),size=5) + 
 theme_bw(base_size=25) +
-ggtitle("Variazione neve nel tempo") + xlab("ANNO") + ylab("NEVE")+
-scale_color_manual(name = "LEGENDA", values = c("NEVE" = "21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 30.83, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23", "ANNO"="2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021"))
+ggtitle("Variazione neve nel tempo") + xlab("ANNO") + ylab("NEVE")
 
-#SBAGLIATO
-SIERRA_NEVADA <-data.frame(class, perc_snow_06,perc_snow_07,perc_snow_08,perc_snow_09,perc_snow_10,perc_snow_11,perc_snow_12,perc_snow_13,perc_snow_14,perc_snow_15,perc_snow_16,perc_snow_17,perc_snow_18,perc_snow_19,perc_snow_20,perc_snow_21)
+#costruisco lo stesso dataframe, ma con la percentuale più reale
 
-graph<-ggplot(SIERRA_NEVADA, aes(x=ANNO)) +
-geom_line(aes(y=NEVE, color="white"),size=5) + 
+ANNO=c(2006, 2007, 2008, 2009, 2010, 2011, 2012 ,2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021)
+NEVE_C=c(21.88, 13.9, 18.25, 14.76, 21.3, 18.90, 12.47, 14.11, 17.01, 11.55, 15.22, 20.62, 16.54, 20.19, 17.69, 16.23)
+graph_adj<-ggplot(SIERRA_NEVADA, aes(x=ANNO)) +
+geom_line(aes(y=NEVE_C, color="white"),size=5) + 
 theme_bw(base_size=25) +
-ggtitle("Variazione neve nel tempo") + xlab("ANNO") + ylab("NEVE")+
-scale_color_manual(name = "LEGENDA", values = c("NEVE" = "white", "ANNO"="blue"))
+ggtitle("Variazione neve nel tempo") + xlab("ANNO") + ylab("NEVE")
 
-#let's do a multiframe
- SIERRA_NEVADA <-data.frame(class, perc_snow_06,perc_snow_07,perc_snow_08,perc_snow_09,perc_snow_10,perc_snow_11,perc_snow_12,perc_snow_13,perc_snow_14,perc_snow_15,perc_snow_16,perc_snow_17,perc_snow_18,perc_snow_19,perc_snow_20,perc_snow_21)
-
-#graph
-ggplot(multitemporal, aes(x=perc_snow_06, perc_snow_07, perc_snow_08, perc_snow_09, perc_snow_10, perc_snow_11, perc_snow_12, perc_snow_13, perc_snow_14, perc_snow_15, perc_snow_16, perc_snow_17, perc_snow_18, perc_snow_19, perc_snow_20, perc_snow_21)), + geom_bar()
-
-#same graph for 2006
-ggplot(multitemporal, aes(x=neve, y=percent_2006, color=class)) + geom_bar(stat="identity",,fill="white")
-
-
-bpa<- ggplot(SIERRA_NEVADA, aes(x=ANNO, y=NEVE)) +
-geom_bar(width = 1, stat = "identity") +
-theme_bw(base_size=25) +
-ggtitle("Variazione copertura nevosa nel corso del tempo") +
-xlab("ANNO") + ylab("NEVE")
-
-
-
-
-ggplot(multitemporal, aes(y=perc_snow_06
-
-
-
-
-
-
+graph+graph_adj
